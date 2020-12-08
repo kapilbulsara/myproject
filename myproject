@@ -1,0 +1,74 @@
+#! /bin/sh
+
+
+if [ $1 = 'add' ] && [ $2 =  'youtube' ] && [ $3 = 'project' ]; then 
+	mkdir $4
+	mkdir "$4/video"
+	mkdir "$4/video/recordings"
+	mkdir "$4/video/edits"
+	mkdir "$4/video/renders"
+
+	mkdir "$4/audio"
+	mkdir "$4/audio/recordings"
+	mkdir "$4/audio/edits"
+	mkdir "$4/audio/renders"
+
+	mkdir "$4/script"
+
+	cd $4 
+
+	touch project.md
+	echo "# $4" >> project.md
+	echo "" >> project.md
+	echo '## script' >> project.md
+	echo "" >> project.md
+	echo '## video' >> project.md
+	echo "" >> project.md
+	echo '## audio' >> project.md
+	echo "" >> project.md
+
+	cd "script"
+	touch master.md
+	echo "# Master script for $4" >> master.md
+fi
+
+
+if [ $1 = 'add' ] && [ $2 =  'youtube' ] && [ $3 = 'scene' ]; then 
+	#assume that user is in project root folder 
+
+	touch "script/$4.md"
+	echo "# $4" >> "script/$4.md"
+
+	mkdir "video/recordings/$4"
+	mkdir "audio/recordings/$4"
+
+	echo "- $4.md" >> "script/master.md"
+	
+	touch project_temp.md
+
+	cur='top'	
+	while IFS= read -r line
+	do
+		if [ "$line" = '## script' ]; then
+			cur='script'
+		elif [ "$line" = '## video' ]; then 
+			cur='video'
+		elif [ "$line" = '## audio' ]; then 
+			cur='audio'
+		elif [ "$line" = '' ]; then
+			if [ "$cur" = 'top' ]; then 
+				continue
+			elif [ "$cur" = 'script' ]; then
+				echo "$cur/$4.md" >> project_temp.md
+			else 
+				echo "$cur/recordings/$4" >> project_temp.md
+			fi
+		fi
+		echo "$line" >> project_temp.md
+
+	done < project.md
+
+	cat project_temp.md > project.md
+	rm project_temp.md
+fi
+
