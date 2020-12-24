@@ -1,74 +1,176 @@
 #! /bin/sh
 
 
-if [ $1 = 'add' ] && [ $2 =  'youtube' ] && [ $3 = 'project' ]; then 
-	mkdir $4
-	mkdir "$4/video"
-	mkdir "$4/video/recordings"
-	mkdir "$4/video/edits"
-	mkdir "$4/video/renders"
+if [ $1 = 'add' ]; then 
 
-	mkdir "$4/audio"
-	mkdir "$4/audio/recordings"
-	mkdir "$4/audio/edits"
-	mkdir "$4/audio/renders"
+	if [ $2 =  'youtube' ]; then 
+		if [ $3 = 'project' ]; then 
+			mkdir $4
+			mkdir "$4/video"
+			mkdir "$4/video/recordings"
+			mkdir "$4/video/edits"
+			mkdir "$4/video/renders"
 
-	mkdir "$4/script"
+			mkdir "$4/audio"
+			mkdir "$4/audio/recordings"
+			mkdir "$4/audio/edits"
+			mkdir "$4/audio/renders"
 
-	cd $4 
+			mkdir "$4/script"
 
-	touch project.md
-	echo "# $4" >> project.md
-	echo "" >> project.md
-	echo '## script' >> project.md
-	echo "" >> project.md
-	echo '## video' >> project.md
-	echo "" >> project.md
-	echo '## audio' >> project.md
-	echo "" >> project.md
+			cd $4 
 
-	cd "script"
-	touch master.md
-	echo "# Master script for $4" >> master.md
-fi
+			touch project.md
+			echo "# $4" >> project.md
+			echo "" >> project.md
+			echo '## script' >> project.md
+			echo "" >> project.md
+			echo '## video' >> project.md
+			echo "" >> project.md
+			echo '## audio' >> project.md
+			echo "" >> project.md
 
+			cd "script"
+			touch master.md
+			echo "# Master script for $4" >> master.md
+		elif [ $3 = 'scene' ]; then 
+			#assume that user is in project root folder 
 
-if [ $1 = 'add' ] && [ $2 =  'youtube' ] && [ $3 = 'scene' ]; then 
-	#assume that user is in project root folder 
+			touch "script/$4.md"
+			echo "# $4" >> "script/$4.md"
 
-	touch "script/$4.md"
-	echo "# $4" >> "script/$4.md"
+			mkdir "video/recordings/$4"
+			mkdir "audio/recordings/$4"
 
-	mkdir "video/recordings/$4"
-	mkdir "audio/recordings/$4"
+			echo "- $4.md" >> "script/master.md"
+			
+			touch project_temp.md
 
-	echo "- $4.md" >> "script/master.md"
-	
-	touch project_temp.md
+			cur='top'	
+			while IFS= read -r line
+			do
+				if [ "$line" = '## script' ]; then
+					cur='script'
+				elif [ "$line" = '## video' ]; then 
+					cur='video'
+				elif [ "$line" = '## audio' ]; then 
+					cur='audio'
+				elif [ "$line" = '' ]; then
+					if [ "$cur" = 'top' ]; then 
+						continue
+					elif [ "$cur" = 'script' ]; then
+						echo "$cur/$4.md" >> project_temp.md
+					else 
+						echo "$cur/recordings/$4" >> project_temp.md
+					fi
+				fi
+				echo "$line" >> project_temp.md
 
-	cur='top'	
-	while IFS= read -r line
-	do
-		if [ "$line" = '## script' ]; then
-			cur='script'
-		elif [ "$line" = '## video' ]; then 
-			cur='video'
-		elif [ "$line" = '## audio' ]; then 
-			cur='audio'
-		elif [ "$line" = '' ]; then
-			if [ "$cur" = 'top' ]; then 
-				continue
-			elif [ "$cur" = 'script' ]; then
-				echo "$cur/$4.md" >> project_temp.md
-			else 
-				echo "$cur/recordings/$4" >> project_temp.md
-			fi
+			done < project.md
+
+			cat project_temp.md > project.md
+			rm project_temp.md
 		fi
-		echo "$line" >> project_temp.md
 
-	done < project.md
+	elif [ $2 =  'software' ]; then 
+		if [ $3 = 'project' ]; then 
+			mkdir $4 
+			mkdir "$4/bugs"
+			mkdir "$4/tests"
+			mkdir "$4/config"
+			mkdir "$4/features"
+			mkdir "$4/wiki"
+			
+			cd $4
+			touch project.md
+			echo "# $4" >> project.md
+			echo "" >> project.md
 
-	cat project_temp.md > project.md
-	rm project_temp.md
+			echo "## bugs" >> project.md
+			echo "" >> project.md
+
+			echo "## tests" >> project.md
+			echo "" >> project.md
+
+			echo "## config" >> project.md
+			echo "" >> project.md
+
+			echo "## features" >> project.md
+			echo "" >> project.md
+
+			echo "## wiki" >> project.md
+			echo "" >> project.md
+		elif [ $3 = 'bug' ]; then 
+			echo "# $4" > "bugs/$4.md"
+			echo "" >> "bugs/$4.md"
+			echo "status=" >> "bugs/$4.md"
+			echo "" >> "bugs/$4.md"
+			echo "## description" >> "bugs/$4.md"
+			echo "" >> "bugs/$4.md"
+			echo "## input" >> "bugs/$4.md"
+			echo "" >> "bugs/$4.md"
+			echo "## expected output" >> "bugs/$4.md"
+			echo "" >> "bugs/$4.md"
+			echo "## actual output" >> "bugs/$4.md"
+			echo "" >> "bugs/$4.md"
+			
+			touch project_temp.md
+
+			cur='top'	
+			while IFS= read -r line
+			do
+				if [ "$line" = '## bugs' ]; then
+					cur='bugs'
+				elif [ "$line" = '' ]; then
+					if [ "$cur" = 'bugs' ]; then 
+						echo "bugs/$4.md" >> project_temp.md
+						cur='end'
+					fi
+				fi
+				echo "$line" >> project_temp.md
+
+			done < project.md
+
+			cat project_temp.md > project.md
+			rm project_temp.md
+
+		elif [ $3 = 'test' ]; then 
+			echo "# $4" > "tests/$4.md"
+			echo "" >> "tests/$4.md"
+			echo "status=" >> "tests/$4.md"
+			echo "" >> "tests/$4.md"
+			echo "## description" >> "tests/$4.md"
+			echo "" >> "tests/$4.md"
+			echo "## input" >> "tests/$4.md"
+			echo "" >> "tests/$4.md"
+			echo "## steps" >> "tests/$4.md"
+			echo "" >> "tests/$4.md"
+			echo "## expected result" >> "tests/$4.md"
+			echo "" >> "tests/$4.md"
+			echo "## actual result" >> "tests/$4.md"
+			echo "" >> "tests/$4.md"
+
+			touch project_temp.md
+
+			cur='top'	
+			while IFS= read -r line
+			do
+				if [ "$line" = '## tests' ]; then
+					cur='tests'
+				elif [ "$line" = '' ]; then
+					if [ "$cur" = 'tests' ]; then 
+						echo "tests/$4.md" >> project_temp.md
+						cur='end'
+					fi
+				fi
+				echo "$line" >> project_temp.md
+
+			done < project.md
+
+			cat project_temp.md > project.md
+			rm project_temp.md
+		fi
+	fi
 fi
+
 

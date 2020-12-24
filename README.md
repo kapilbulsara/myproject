@@ -14,9 +14,9 @@ Navigate inside the myproject source code folder.
 
 ## Usage
 
-### create project
+### youtube
 
-For now, the only project type available is YouTube.
+#### create project
 
 Navigate to the folder you would like to add project files to.
 
@@ -26,7 +26,7 @@ Navigate to the folder you would like to add project files to.
 
 This will create the directory structure as follows: 
 
-#### directory structure
+##### directory structure
 
 .:
 audio  project.md  script  video
@@ -40,7 +40,7 @@ master.md
 ./video:
 edits  recordings  renders
 
-### add scene
+#### add scene
 
 
 `myproject add youtube scene <scene_name>`
@@ -53,5 +53,34 @@ edits  recordings  renders
 - create a script file `./script/<scene_name>.md`
 - add path to `<scene_name>`.md in `script/master.md`
 - add links to the folders and files created above in `./project.md`
+
+### software 
+
+#### create project
+
+Navigate to the folder you would like to add project files to.
+
+
+`myproject add software project <project_name>`
+
+`<project_name>` must not contain spaces or special characters
+
+This will create the directory structure as follows: 
+
+
+##### directory structure
+
+.:
+bugs  config  features  project.md  tests  wiki
+
+#### add [bug|test]
+
+
+`myproject add software bug <bug_name>`
+`<bug_name>` must not contain spaces or special characters
+
+- This command will: 
+	- create bug file or test file with the given name 
+	- add a link in project.md under bugs or tests respectively
 
 You can then open `./project.md` in vim and get access to all the files and folders in the projects from one place via the default  netrw file browser. 
