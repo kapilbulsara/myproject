@@ -1,20 +1,12 @@
-#! /bin/sh
+#! /bin/bash
 
 
 if [ $1 = 'add' ]; then 
 
 	if [ $2 =  'youtube' ]; then 
 		if [ $3 = 'project' ]; then 
-			mkdir $4
-			mkdir "$4/video"
-			mkdir "$4/video/recordings"
-			mkdir "$4/video/edits"
-			mkdir "$4/video/renders"
-
-			mkdir "$4/audio"
-			mkdir "$4/audio/recordings"
-			mkdir "$4/audio/edits"
-			mkdir "$4/audio/renders"
+			#mkdir $4
+			mkdir -p "$4/"{video,audio}/{recordings,edits,renders}
 
 			mkdir "$4/script"
 
@@ -38,9 +30,11 @@ if [ $1 = 'add' ]; then
 
 			touch "script/$4.md"
 			echo "# $4" >> "script/$4.md"
+			
+			mkdir -p {audio,video}/recordings/"$4"
 
-			mkdir "video/recordings/$4"
-			mkdir "audio/recordings/$4"
+			#mkdir "video/recordings/$4"
+			#mkdir "audio/recordings/$4"
 
 			echo "- $4.md" >> "script/master.md"
 			
@@ -74,13 +68,8 @@ if [ $1 = 'add' ]; then
 
 	elif [ $2 =  'software' ]; then 
 		if [ $3 = 'project' ]; then 
-			mkdir $4 
-			mkdir "$4/bugs"
-			mkdir "$4/tests"
-			mkdir "$4/config"
-			mkdir "$4/features"
-			mkdir "$4/wiki"
-			
+			mkdir -p "$4"/{bugs,tests,config,features,wiki} 
+
 			cd $4
 			touch project.md
 			echo "# $4" >> project.md
@@ -160,6 +149,35 @@ if [ $1 = 'add' ]; then
 				elif [ "$line" = '' ]; then
 					if [ "$cur" = 'tests' ]; then 
 						echo "tests/$4.md" >> project_temp.md
+						cur='end'
+					fi
+				fi
+				echo "$line" >> project_temp.md
+
+			done < project.md
+
+			cat project_temp.md > project.md
+			rm project_temp.md
+		elif [ $3 = 'feature' ]; then 
+			echo "# $4" > "features/$4.md"
+			echo "" >> "features/$4.md"
+			echo "status=" >> "features/$4.md"
+			echo "" >> "features/$4.md"
+			echo "## description" >> "features/$4.md"
+			echo "" >> "features/$4.md"
+			echo "## technical" >> "features/$4.md"
+			echo "" >> "features/$4.md"
+			
+			touch project_temp.md
+
+			cur='top'	
+			while IFS= read -r line
+			do
+				if [ "$line" = '## features' ]; then
+					cur='features'
+				elif [ "$line" = '' ]; then
+					if [ "$cur" = 'features' ]; then 
+						echo "features/$4.md" >> project_temp.md
 						cur='end'
 					fi
 				fi
