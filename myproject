@@ -187,6 +187,28 @@ if [ $1 = 'add' ]; then
 
 			cat project_temp.md > project.md
 			rm project_temp.md
+		elif [ $3 = 'wiki' ]; then 
+			echo "# $4" > "wiki/$4.md"
+			echo "" >> "wiki/$4.md"
+			echo "" >> "wiki/$4.md"
+			
+			touch project_temp.md
+
+			cur='top'	
+			while IFS= read -r line
+			do
+				if [ "$line" = '## wiki' ]; then
+					cur='wiki'
+				elif [ "$line" = '' ]; then
+					if [ "$cur" = 'wiki' ]; then 
+						echo "wiki/$4.md" >> project_temp.md
+						cur='end'
+					fi
+				fi
+				echo "$line" >> project_temp.md
+			done < project.md
+			cat project_temp.md > project.md
+			rm project_temp.md
 		fi
 	fi
 fi
