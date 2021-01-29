@@ -7,6 +7,7 @@ if [ $1 = 'add' ]; then
 		if [ $3 = 'project' ]; then 
 			#mkdir $4
 			mkdir -p "$4/"{video,audio}/{recordings,edits,renders}
+			mkdir "$4/images"
 
 			mkdir "$4/script"
 
@@ -21,6 +22,8 @@ if [ $1 = 'add' ]; then
 			echo "" >> project.md
 			echo '## audio' >> project.md
 			echo "" >> project.md
+			echo '## images' >> project.md
+			echo "" >> project.md
 
 			cd "script"
 			touch master.md
@@ -32,7 +35,7 @@ if [ $1 = 'add' ]; then
 			echo "# $4" >> "script/$4.md"
 			
 			mkdir -p {audio,video}/recordings/"$4"
-
+			mkdir -p "images/$4"
 			#mkdir "video/recordings/$4"
 			#mkdir "audio/recordings/$4"
 
@@ -49,10 +52,12 @@ if [ $1 = 'add' ]; then
 					cur='video'
 				elif [ "$line" = '## audio' ]; then 
 					cur='audio'
+				elif [ "$line" = '## images' ]; then 
+					cur='images'
 				elif [ "$line" = '' ]; then
 					if [ "$cur" = 'top' ]; then 
 						continue
-					elif [ "$cur" = 'script' ]; then
+					elif [ "$cur" = 'script' ] || [ "$cur" = 'images' ]; then
 						echo "$cur/$4.md" >> project_temp.md
 					else 
 						echo "$cur/recordings/$4" >> project_temp.md
