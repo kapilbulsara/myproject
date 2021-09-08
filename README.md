@@ -10,7 +10,7 @@ As it is, the script does not do any kind of error checking.
 
 Navigate inside the myproject source code folder. 
 
-`sudo install myproject /usr/local/bin`
+`sudo bash install.sh`
 
 ## Usage
 
