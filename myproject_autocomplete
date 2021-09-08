@@ -1,0 +1,23 @@
+#! /bin/bash
+
+myproject_autocomplete()
+{
+	source ~/.config/mynotes/mynotes.conf
+
+	CUR="${COMP_WORDS[$COMP_CWORD]}"
+	if [ "${#COMP_WORDS[@]}" = "2" ]; then
+		COMPREPLY=($(compgen -W "add" "${COMP_WORDS[1]}"))
+	elif [ "${#COMP_WORDS[@]}" = "3" ]; then
+		COMPREPLY=($(compgen -W "youtube software" "${COMP_WORDS[2]}"))
+	elif [ "${#COMP_WORDS[@]}" = "4" ]; then
+		if [  "${COMP_WORDS[$COMP_CWORD -1]}" = "youtube" ]; then
+		COMPREPLY=($(compgen -W "project scene" "${COMP_WORDS[3]}"))
+		elif [  "${COMP_WORDS[$COMP_CWORD -1]}" = "software" ]; then
+		COMPREPLY=($(compgen -W "project bug test feature wiki" "${COMP_WORDS[3]}"))
+		fi
+	fi
+
+}
+
+#-o nospace 
+complete -F autocomplete  myproject_autocomplete 
